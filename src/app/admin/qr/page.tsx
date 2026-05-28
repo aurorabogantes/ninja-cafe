@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
+import { Coffee, ArrowLeft } from 'lucide-react';
+
+const DEFAULT_URL = 'http://192.168.100.154:3000';
 
 export default function QRPage() {
   const [qrDataUrl, setQrDataUrl] = useState('');
-  const [customUrl, setCustomUrl] = useState('');
-  const [menuUrl, setMenuUrl] = useState('');
+  const [customUrl, setCustomUrl] = useState(DEFAULT_URL);
+  const [menuUrl, setMenuUrl] = useState(DEFAULT_URL);
 
   useEffect(() => {
-    const base =
-      process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
-    setMenuUrl(base);
-    setCustomUrl(base);
+    setMenuUrl(DEFAULT_URL);
+    setCustomUrl(DEFAULT_URL);
   }, []);
 
   useEffect(() => {
@@ -45,16 +46,18 @@ export default function QRPage() {
         }}
       >
         <div className="flex items-center gap-3">
-          <span className="text-2xl">☕</span>
+          <div className="w-9 h-9 rounded-xl bg-amber-fire/15 border border-amber-fire/25 flex items-center justify-center">
+            <Coffee size={18} className="text-amber-glow" />
+          </div>
           <h1 className="font-playfair text-lg font-bold text-wood-pale">
             Código QR del Menú
           </h1>
         </div>
         <a
           href="/admin/dashboard"
-          className="text-xs text-stone-light hover:text-wood-pale transition-colors"
+          className="text-xs text-stone-light hover:text-wood-pale transition-colors flex items-center gap-1"
         >
-          ← Volver al panel
+          <ArrowLeft size={13} /> Volver al panel
         </a>
       </header>
 

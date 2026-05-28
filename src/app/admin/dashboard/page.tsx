@@ -4,13 +4,17 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Order, OrderStatus } from '@/types';
 import AdminOrderCard from '@/components/AdminOrderCard';
+import {
+  Coffee, QrCode, RefreshCw, Bell, List, Settings, Check, LogOut, Loader2,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const STATUS_FILTERS: { value: 'all' | OrderStatus; label: string }[] = [
-  { value: 'all', label: '📋 Todos' },
-  { value: 'new', label: '🔔 Nuevos' },
-  { value: 'preparing', label: '⚙️ En prep.' },
-  { value: 'ready', label: '✅ Listos' },
-  { value: 'completed', label: '✓ Entregados' },
+const STATUS_FILTERS: { value: 'all' | OrderStatus; label: string; Icon: LucideIcon }[] = [
+  { value: 'all',       label: 'Todos',      Icon: List },
+  { value: 'new',       label: 'Nuevos',     Icon: Bell },
+  { value: 'preparing', label: 'En prep.',   Icon: Settings },
+  { value: 'ready',     label: 'Listos',     Icon: Check },
+  { value: 'completed', label: 'Entregados', Icon: Check },
 ];
 
 export default function AdminDashboard() {
@@ -125,7 +129,9 @@ export default function AdminDashboard() {
         }}
       >
         <div className="flex items-center gap-3">
-          <span className="text-2xl">☕</span>
+          <div className="w-9 h-9 rounded-xl bg-amber-fire/15 border border-amber-fire/25 flex items-center justify-center">
+            <Coffee size={18} className="text-amber-glow" />
+          </div>
           <div>
             <h1 className="font-playfair text-lg font-bold text-wood-pale leading-none">
               Panel de Control
@@ -136,15 +142,15 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <a
             href="/admin/qr"
-            className="text-xs text-stone-light hover:text-wood-pale transition-colors border border-wood-warm/30 hover:border-wood-warm/60 px-3 py-1.5 rounded-lg"
+            className="text-xs text-stone-light hover:text-wood-pale transition-colors border border-wood-warm/30 hover:border-wood-warm/60 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
           >
-            📱 Código QR
+            <QrCode size={12} /> Codigo QR
           </a>
           <button
             onClick={handleLogout}
-            className="text-xs text-stone-medium hover:text-red-400 transition-colors"
+            className="text-xs text-stone-medium hover:text-red-400 transition-colors flex items-center gap-1"
           >
-            Salir
+            <LogOut size={13} /> Salir
           </button>
         </div>
       </header>
@@ -166,8 +172,8 @@ export default function AdminDashboard() {
           value={orders.length}
           color="text-stone-light"
         />
-        <div className="ml-auto text-xs text-stone-dark whitespace-nowrap">
-          🔄 Actualiza cada 5 s
+        <div className="ml-auto text-xs text-stone-dark whitespace-nowrap flex items-center gap-1">
+          <RefreshCw size={10} /> Actualiza cada 5 s
         </div>
       </div>
 
@@ -180,13 +186,13 @@ export default function AdminDashboard() {
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
-            className={`text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap transition-colors border ${
+            className={`text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap transition-colors border flex items-center gap-1 ${
               filter === f.value
                 ? 'bg-amber-fire text-wood-dark border-amber-fire'
                 : 'border-wood-warm/30 text-stone-medium hover:text-wood-pale hover:border-wood-warm/60'
             }`}
           >
-            {f.label}
+            <f.Icon size={11} /> {f.label}
           </button>
         ))}
       </div>
@@ -195,12 +201,12 @@ export default function AdminDashboard() {
       <main className="max-w-3xl mx-auto px-4 py-6">
         {isLoading ? (
           <div className="text-center py-20 text-stone-medium">
-            <div className="text-4xl mb-3 animate-spin inline-block">⚙️</div>
-            <p>Cargando pedidos…</p>
+            <Loader2 className="w-10 h-10 mb-4 mx-auto animate-spin text-stone-dark" />
+            <p>Cargando pedidos...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-20 text-stone-medium">
-            <div className="text-5xl mb-4 opacity-30">☕</div>
+            <Coffee className="w-12 h-12 mb-4 mx-auto text-stone-dark/40" />
             <p className="font-playfair text-xl text-stone-medium">
               {filter === 'all'
                 ? 'Aún no hay pedidos'

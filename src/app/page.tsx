@@ -5,6 +5,9 @@ import { MenuItem, CartItem, OrderItem } from '@/types';
 import { menuItems } from '@/lib/menu';
 import MenuCard from '@/components/MenuCard';
 import OrderModal from '@/components/OrderModal';
+import {
+  ShoppingCart, ArrowLeft, Coffee, Flame, Snowflake, CheckCircle,
+} from 'lucide-react';
 
 type OrderStep = 'menu' | 'cart' | 'success';
 
@@ -42,7 +45,6 @@ export default function CustomerMenu() {
   }, []);
 
   const totalItems = cart.reduce((s, c) => s + c.quantity, 0);
-  const totalPrice = cart.reduce((s, c) => s + c.item.price * c.quantity, 0);
 
   const filtered =
     categoryFilter === 'all'
@@ -82,7 +84,9 @@ export default function CustomerMenu() {
   if (step === 'success') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <div className="text-7xl mb-6 animate-fade-in-up">☕</div>
+        <div className="w-24 h-24 rounded-full bg-amber-fire/15 border border-amber-fire/25 flex items-center justify-center mx-auto mb-6 animate-fade-in-up">
+          <CheckCircle className="w-11 h-11 text-amber-glow" />
+        </div>
         <h1
           className="font-playfair text-4xl font-bold text-wood-pale mb-3 animate-fade-in-up"
           style={{ animationDelay: '0.1s' }}
@@ -94,13 +98,15 @@ export default function CustomerMenu() {
           style={{ animationDelay: '0.2s' }}
         >
           {customerName ? `¡Gracias, ${customerName}! ` : ''}
-          Tu café estará listo en unos momentos. Relájate y disfruta la cabaña 🌲
+          Tu café estará listo en unos momentos. Relájate y disfruta la cabaña.
         </p>
         <div
-          className="text-4xl mb-6 animate-fade-in-up"
+          className="flex items-center gap-3 mb-6 animate-fade-in-up"
           style={{ animationDelay: '0.3s' }}
         >
-          🌲🔥🌲
+          <div className="h-px w-20 bg-wood-warm/20" />
+          <Coffee size={15} className="text-amber-fire/50" />
+          <div className="h-px w-20 bg-wood-warm/20" />
         </div>
         <button
           onClick={() => {
@@ -125,7 +131,7 @@ export default function CustomerMenu() {
           onClick={() => setStep('menu')}
           className="text-stone-medium hover:text-wood-pale transition-colors mb-6 flex items-center gap-2 text-sm"
         >
-          ← Volver al menú
+          <ArrowLeft size={16} /> Volver al menú
         </button>
 
         <h1 className="font-playfair text-3xl font-bold text-wood-pale mb-6">
@@ -142,7 +148,6 @@ export default function CustomerMenu() {
               <span className="text-2xl">{item.emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-wood-pale text-sm">{item.name}</p>
-                <p className="text-xs text-stone-medium">${item.price} c/u</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -161,9 +166,6 @@ export default function CustomerMenu() {
                   +
                 </button>
               </div>
-              <span className="text-amber-glow font-bold text-sm w-16 text-right">
-                ${item.price * quantity}
-              </span>
             </div>
           ))}
         </div>
@@ -208,20 +210,18 @@ export default function CustomerMenu() {
           />
         </div>
 
-        {/* Total & place */}
+        {/* Place order */}
         {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
-        <div className="bg-wood-deep border border-wood-warm/20 rounded-xl p-4 mb-4 flex items-center justify-between">
-          <span className="text-stone-light">Total</span>
-          <span className="font-playfair text-2xl font-bold text-amber-glow">
-            ${totalPrice}
-          </span>
-        </div>
         <button
           onClick={placeOrder}
           disabled={isPlacing}
-          className="btn-primary w-full text-base py-3 disabled:opacity-60"
+          className="btn-primary w-full text-base py-3 disabled:opacity-60 flex items-center justify-center gap-2"
         >
-          {isPlacing ? 'Enviando…' : '☕ Confirmar pedido'}
+          {isPlacing ? (
+            <><div className="w-4 h-4 border-2 border-wood-pale/30 border-t-wood-pale rounded-full animate-spin" /> Enviando…</>
+          ) : (
+            <><Coffee size={16} /> Confirmar pedido</>
+          )}
         </button>
       </div>
     );
@@ -233,22 +233,32 @@ export default function CustomerMenu() {
       {/* Hero header */}
       <header
         className="relative overflow-hidden border-b px-5 pt-10 pb-8"
-        style={{
-          background:
-            'linear-gradient(160deg, #1E1108 0%, #2D1A0A 50%, #1A2E23 100%)',
-          borderColor: 'rgba(122,74,40,0.25)',
-        }}
+        style={{ background: '#100804', borderColor: 'rgba(122,74,40,0.25)' }}
       >
+        {/* Hero background photo */}
+        <img
+          src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&h=400&fit=crop&q=55"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none"
+        />
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(160deg, rgba(30,17,8,0.96) 0%, rgba(45,26,10,0.88) 50%, rgba(26,46,35,0.96) 100%)' }}
+        />
         {/* Wood grain texture overlay */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
           style={{
             backgroundImage:
               'repeating-linear-gradient(75deg, transparent, transparent 28px, rgba(200,160,80,0.8) 28px, rgba(200,160,80,0.8) 29px)',
           }}
         />
         <div className="relative max-w-4xl mx-auto text-center">
-          <div className="text-5xl mb-3 animate-fade-in-up">☕</div>
+          <div className="w-16 h-16 rounded-full bg-amber-fire/15 border border-amber-fire/25 flex items-center justify-center mx-auto mb-4 animate-fade-in-up">
+            <Coffee className="w-8 h-8 text-amber-glow" />
+          </div>
           <h1
             className="font-playfair text-4xl sm:text-5xl font-black text-wood-pale leading-tight mb-2 animate-fade-in-up"
             style={{ animationDelay: '0.05s' }}
@@ -262,22 +272,21 @@ export default function CustomerMenu() {
             Artesanal · Preparado en tu Ninja ES601
           </p>
           <div
-            className="flex items-center justify-center gap-3 mt-4 text-2xl opacity-50 animate-fade-in-up"
+            className="flex items-center justify-center gap-2 mt-5 animate-fade-in-up"
             style={{ animationDelay: '0.15s' }}
           >
-            <span>🌲</span>
-            <span>🏔️</span>
-            <span>🔥</span>
-            <span>🌲</span>
+            <div className="h-px w-16 bg-wood-warm/30" />
+            <Coffee size={13} className="text-amber-fire/50" />
+            <div className="h-px w-16 bg-wood-warm/30" />
           </div>
         </div>
       </header>
 
       {/* Sticky bar — filters + cart */}
       <div
-        className="sticky top-0 z-30 backdrop-blur-md border-b px-4 py-3 flex items-center justify-between gap-3"
+        className="sticky top-0 z-30 border-b px-4 py-3 flex items-center justify-between gap-3"
         style={{
-          background: 'rgba(16, 8, 4, 0.92)',
+          background: 'rgba(14, 7, 3, 0.97)',
           borderColor: 'rgba(122,74,40,0.2)',
         }}
       >
@@ -286,29 +295,32 @@ export default function CustomerMenu() {
             <button
               key={f}
               onClick={() => setCategoryFilter(f)}
-              className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-colors border ${
+              className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-colors border flex items-center gap-1 ${
                 categoryFilter === f
                   ? 'bg-amber-fire text-wood-dark border-amber-fire'
                   : 'border-wood-warm/30 text-stone-medium hover:text-wood-pale hover:border-wood-warm/60'
               }`}
             >
-              {f === 'all' ? '☕ Todo' : f === 'hot' ? '🔥 Caliente' : '🧊 Frío'}
+              {f === 'all' ? <Coffee size={11} /> : f === 'hot' ? <Flame size={11} /> : <Snowflake size={11} />}
+              {f === 'all' ? 'Todo' : f === 'hot' ? 'Caliente' : 'Frío'}
             </button>
           ))}
         </div>
 
         <button
           onClick={() => totalItems > 0 && setStep('cart')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all border whitespace-nowrap ${
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all border whitespace-nowrap ${
             totalItems > 0
               ? 'bg-amber-fire text-wood-dark border-amber-fire hover:bg-amber-glow cursor-pointer'
               : 'border-wood-warm/20 text-stone-dark cursor-default'
           }`}
         >
-          🛒{' '}
-          {totalItems > 0
-            ? `${totalItems} ítem${totalItems > 1 ? 's' : ''} · $${totalPrice}`
-            : 'Vacío'}
+          <ShoppingCart size={13} />
+          <span>
+            {totalItems > 0
+              ? `${totalItems} ítem${totalItems > 1 ? 's' : ''}`
+              : 'Vacío'}
+          </span>
         </button>
       </div>
 
@@ -316,53 +328,35 @@ export default function CustomerMenu() {
       <main className="max-w-4xl mx-auto px-4 py-8">
         {categoryFilter === 'all' ? (
           <>
-            <SectionTitle title="🔥 Bebidas Calientes" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+            <SectionTitle title="Bebidas Calientes" icon={<Flame size={20} className="text-amber-fire" />} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
               {menuItems
                 .filter((m) => m.category === 'hot')
                 .map((item, i) => (
-                  <div
-                    key={item.id}
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: `${i * 0.05}s` }}
-                  >
-                    <MenuCard item={item} onSelect={setSelectedItem} />
-                  </div>
+                  <MenuCard key={item.id} item={item} onSelect={setSelectedItem} index={i} />
                 ))}
             </div>
-            <SectionTitle title="🧊 Bebidas Frías" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <SectionTitle title="Bebidas Frías" icon={<Snowflake size={20} className="text-forest-light" />} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {menuItems
                 .filter((m) => m.category === 'cold')
                 .map((item, i) => (
-                  <div
-                    key={item.id}
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: `${i * 0.05}s` }}
-                  >
-                    <MenuCard item={item} onSelect={setSelectedItem} />
-                  </div>
+                  <MenuCard key={item.id} item={item} onSelect={setSelectedItem} index={i} />
                 ))}
             </div>
           </>
         ) : (
           <>
             <SectionTitle
-              title={
-                categoryFilter === 'hot'
-                  ? '🔥 Bebidas Calientes'
-                  : '🧊 Bebidas Frías'
+              title={categoryFilter === 'hot' ? 'Bebidas Calientes' : 'Bebidas Frías'}
+              icon={categoryFilter === 'hot'
+                ? <Flame size={20} className="text-amber-fire" />
+                : <Snowflake size={20} className="text-forest-light" />
               }
             />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((item, i) => (
-                <div
-                  key={item.id}
-                  className="animate-fade-in-up"
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <MenuCard item={item} onSelect={setSelectedItem} />
-                </div>
+                <MenuCard key={item.id} item={item} onSelect={setSelectedItem} index={i} />
               ))}
             </div>
           </>
@@ -370,8 +364,8 @@ export default function CustomerMenu() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-8 text-stone-medium text-xs border-t border-wood-warm/10">
-        <p>Hecho con ☕ en tu Ninja DualBrew Pro ES601 · 🌲 Cabaña de Montaña</p>
+      <footer className="text-center py-8 text-stone-dark text-xs border-t border-wood-warm/10">
+        <p>Ninja DualBrew Pro ES601 &mdash; Cabaña de Montaña</p>
       </footer>
 
       {/* Item detail modal */}
@@ -387,9 +381,10 @@ export default function CustomerMenu() {
   );
 }
 
-function SectionTitle({ title }: { title: string }) {
+function SectionTitle({ title, icon }: { title: string; icon: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-4 mb-5">
+    <div className="flex items-center gap-3 mb-5">
+      <span className="flex-shrink-0">{icon}</span>
       <h2 className="font-playfair text-2xl font-bold text-wood-pale whitespace-nowrap">
         {title}
       </h2>

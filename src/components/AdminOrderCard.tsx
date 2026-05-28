@@ -3,6 +3,10 @@
 import { useState, useCallback } from 'react';
 import { Order, OrderStatus, AISuggestion } from '@/types';
 import { menuItems } from '@/lib/menu';
+import {
+  Coffee, Settings, Thermometer, Sparkles, Clock, FileText,
+  ChevronDown, ChevronUp, ChevronRight, Trash2,
+} from 'lucide-react';
 
 type SugState = 'idle' | 'loading' | 'done' | 'error';
 
@@ -37,14 +41,14 @@ function AiSuggestionPanel({ menuItemId }: { menuItemId: string }) {
     <div className="mt-3 rounded-lg border border-amber-fire/30 bg-amber-fire/5 p-3">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-amber-glow flex items-center gap-1.5">
-          🤖 Sugerencias IA — Tueste & Molienda
+          <Sparkles size={12} /> Sugerencias IA — Tueste &amp; Molienda
         </span>
         {state === 'idle' && (
           <button
             onClick={fetch_}
-            className="text-xs bg-amber-fire text-wood-dark font-bold px-2.5 py-1 rounded-lg hover:bg-amber-glow transition-colors"
+            className="text-xs bg-amber-fire text-wood-dark font-bold px-2.5 py-1 rounded-lg hover:bg-amber-glow transition-colors flex items-center gap-1"
           >
-            Consultar ✨
+            <Sparkles size={11} /> Consultar
           </button>
         )}
       </div>
@@ -62,9 +66,9 @@ function AiSuggestionPanel({ menuItemId }: { menuItemId: string }) {
       )}
       {state === 'done' && data && (
         <div className="space-y-2">
-          <AiRow icon="🌰" label="Tueste" value={data.roast} />
-          <AiRow icon="⚙️" label="Molienda" value={data.grind} />
-          <AiRow icon="🌡️" label="Temperatura" value={data.temperature} />
+          <AiRow icon={<Coffee size={13} />} label="Tueste" value={data.roast} />
+          <AiRow icon={<Settings size={13} />} label="Molienda" value={data.grind} />
+          <AiRow icon={<Thermometer size={13} />} label="Temperatura" value={data.temperature} />
           <p className="text-xs text-stone-light italic pt-1 border-t border-amber-fire/20">{data.notes}</p>
         </div>
       )}
@@ -72,10 +76,10 @@ function AiSuggestionPanel({ menuItemId }: { menuItemId: string }) {
   );
 }
 
-function AiRow({ icon, label, value }: { icon: string; label: string; value: string }) {
+function AiRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="flex items-start gap-2">
-      <span className="text-sm mt-0.5">{icon}</span>
+      <div className="text-amber-glow mt-0.5 flex-shrink-0">{icon}</div>
       <div>
         <span className="text-xs text-stone-medium uppercase tracking-wider block">{label}</span>
         <span className="text-xs text-wood-pale font-medium">{value}</span>
@@ -95,19 +99,19 @@ const STATUS_CONFIG: Record<OrderStatus, { label: string; color: string; next?: 
     label: 'Nuevo',
     color: 'bg-amber-fire/20 text-amber-fire border-amber-fire/40',
     next: 'preparing',
-    nextLabel: '→ En preparación',
+    nextLabel: 'En preparación',
   },
   preparing: {
     label: 'En preparación',
     color: 'bg-blue-500/20 text-blue-300 border-blue-400/40',
     next: 'ready',
-    nextLabel: '→ Listo',
+    nextLabel: 'Listo',
   },
   ready: {
-    label: '✓ Listo',
+    label: 'Listo',
     color: 'bg-forest-light/20 text-forest-light border-forest-light/40',
     next: 'completed',
-    nextLabel: '→ Entregado',
+    nextLabel: 'Entregado',
   },
   completed: {
     label: 'Entregado',
@@ -125,7 +129,6 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
 
   const config = STATUS_CONFIG[order.status];
-  const total = order.items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   return (
     <div
@@ -160,12 +163,10 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
               {config.label}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-xs text-stone-medium mt-0.5">
-            <span>🕐 {formatTime(order.createdAt)}</span>
+            <div className="flex items-center gap-1.5 text-xs text-stone-medium mt-0.5">
+            <Clock size={11} /> <span>{formatTime(order.createdAt)}</span>
             <span>·</span>
             <span>{order.items.reduce((s, i) => s + i.quantity, 0)} ítem(s)</span>
-            <span>·</span>
-            <span className="text-amber-glow font-semibold">${total}</span>
           </div>
         </div>
 
@@ -174,17 +175,17 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
           {config.next && (
             <button
               onClick={() => onStatusChange(order.id, config.next!)}
-              className="text-xs bg-forest-deep text-forest-light border border-forest-light/30 hover:bg-forest-medium hover:text-wood-pale px-3 py-1.5 rounded-lg transition-colors font-medium"
+              className="text-xs bg-forest-deep text-forest-light border border-forest-light/30 hover:bg-forest-medium hover:text-wood-pale px-3 py-1.5 rounded-lg transition-colors font-medium flex items-center gap-1"
             >
-              {config.nextLabel}
+              <ChevronRight size={12} /> {config.nextLabel}
             </button>
           )}
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="text-stone-medium hover:text-wood-pale transition-colors px-2 py-1.5 rounded-lg hover:bg-wood-medium/30 text-sm"
+            className="text-stone-medium hover:text-wood-pale transition-colors px-2 py-1.5 rounded-lg hover:bg-wood-medium/30"
             aria-label="Expandir pedido"
           >
-            {expanded ? '▲' : '▼'}
+            {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </button>
         </div>
       </div>
@@ -194,8 +195,9 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
         <div className="border-t border-wood-warm/20 p-4 space-y-3">
           {/* Notes */}
           {order.notes && (
-            <div className="text-xs bg-amber-fire/10 border border-amber-fire/20 rounded-lg p-3 text-stone-pale italic">
-              📝 Nota: {order.notes}
+            <div className="text-xs bg-amber-fire/10 border border-amber-fire/20 rounded-lg p-3 text-stone-pale italic flex items-start gap-2">
+              <FileText size={12} className="text-amber-fire/70 mt-0.5 flex-shrink-0" />
+              {order.notes}
             </div>
           )}
 
@@ -227,11 +229,8 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-amber-glow font-semibold">
-                        ${orderItem.price * orderItem.quantity}
-                      </span>
                       <span className="text-stone-medium text-xs">
-                        {isActive ? '▲' : '▼ ver pasos'}
+                        {isActive ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                       </span>
                     </div>
                   </button>
@@ -265,9 +264,9 @@ export default function AdminOrderCard({ order, onStatusChange, onDelete }: Prop
             <div className="pt-1 text-right">
               <button
                 onClick={() => onDelete(order.id)}
-                className="text-xs text-red-400/70 hover:text-red-400 transition-colors underline"
+                className="text-xs text-red-400/70 hover:text-red-400 transition-colors flex items-center gap-1"
               >
-                Eliminar pedido
+                <Trash2 size={12} /> Eliminar pedido
               </button>
             </div>
           )}

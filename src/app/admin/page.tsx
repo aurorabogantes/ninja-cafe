@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Coffee } from 'lucide-react';
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -36,7 +37,9 @@ export default function AdminLogin() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">☕</div>
+          <div className="w-16 h-16 rounded-full bg-amber-fire/15 border border-amber-fire/25 flex items-center justify-center mx-auto mb-4">
+            <Coffee className="w-8 h-8 text-amber-glow" />
+          </div>
           <h1 className="font-playfair text-3xl font-bold text-wood-pale">Panel Admin</h1>
           <p className="text-stone-medium text-sm mt-1">Café de Montaña</p>
         </div>
@@ -73,7 +76,7 @@ export default function AdminLogin() {
             disabled={isLoading || !password}
             className="btn-primary w-full py-3 disabled:opacity-60"
           >
-            {isLoading ? 'Verificando…' : 'Entrar al panel →'}
+            {isLoading ? 'Verificando...' : 'Entrar al panel'}
           </button>
         </form>
 
