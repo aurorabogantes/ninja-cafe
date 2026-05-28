@@ -176,7 +176,7 @@ export const menuItems: MenuItem[] = [
     id: 'frappe-lena',
     name: 'Frappé de Leña',
     description:
-      'Concentrado mezclado con hielo, leche y vainilla ahumada. Fogón de montaña convertido en bebida.',
+      'La evocación líquida de una fogata en la montaña. Concentrado de café licuado con hielo, leche entera y vainilla ahumada hasta obtener una textura suave, fría y completamente indulgente. El ahumado sutil recuerda las brasas al atardecer; el café es el hilo que une todo. Coronado con crema batida y una lluvia de canela — es tanto postre como bebida, y no pide disculpas por ello.',
     price: 80,
     category: 'cold',
     emoji: '🔥',
@@ -196,7 +196,7 @@ export const menuItems: MenuItem[] = [
     id: 'cold-honey-haze',
     name: 'Cold Honey Haze',
     description:
-      'Over Ice con miel silvestre y leche de avena. Suavidad amaderada con la dulzura del campo al atardecer.',
+      'Café sobre hielo con miel silvestre y leche de avena — una combinación que suena simple y resulta mágica. La miel disuelve su dulzura floral en el café frío mientras la avena aporta una cremosidad vegetal y ligera. Dorado, suave y profundamente satisfactorio; como ver el campo iluminarse al atardecer desde la terraza de la cabaña. Vegano, gentil con el cuerpo y completamente adictivo.',
     price: 68,
     category: 'cold',
     emoji: '🌸',
