@@ -4,16 +4,15 @@ import { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { Coffee, ArrowLeft } from 'lucide-react';
 
-const DEFAULT_URL = 'http://192.168.100.154:3000';
-
 export default function QRPage() {
   const [qrDataUrl, setQrDataUrl] = useState('');
-  const [customUrl, setCustomUrl] = useState(DEFAULT_URL);
-  const [menuUrl, setMenuUrl] = useState(DEFAULT_URL);
+  const [customUrl, setCustomUrl] = useState('');
+  const [menuUrl, setMenuUrl] = useState('');
 
   useEffect(() => {
-    setMenuUrl(DEFAULT_URL);
-    setCustomUrl(DEFAULT_URL);
+    const origin = window.location.origin;
+    setMenuUrl(origin);
+    setCustomUrl(origin);
   }, []);
 
   useEffect(() => {

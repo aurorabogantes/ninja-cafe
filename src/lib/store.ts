@@ -1,54 +1,63 @@
-import fs from 'fs';
-import path from 'path';
+import { createClient } from '@supabase/supabase-js';
 import { Order } from '@/types';
 
-const DATA_DIR = path.join(process.cwd(), 'data');
-const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
 
-function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
-  }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function rowToOrder(row: any): Order {
+  return {
+    id: row.id,
+    customerName: row.customer_name,
+    items: row.items,
+    status: row.status,
+    notes: row.notes,
+    createdAt: row.created_at,
+  };
 }
 
-export function getOrders(): Order[] {
-  ensureDataDir();
-  if (!fs.existsSync(ORDERS_FILE)) return [];
-  try {
-    const raw = fs.readFileSync(ORDERS_FILE, 'utf-8');
-    return JSON.parse(raw) as Order[];
-  } catch {
-    return [];
-  }
+export async function getOrders(): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map(rowToOrder);
 }
 
-export function saveOrders(orders: Order[]): void {
-  ensureDataDir();
-  fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf-8');
+export async function addOrder(order: Order): Promise<void> {
+  const { error } = await supabase.from('orders').insert({
+    id: order.id,
+    customer_name: order.customerName,
+    items: order.items,
+    status: order.status,
+    notes: order.notes,
+    created_at: order.createdAt,
+  });
+  if (error) throw error;
 }
 
-export function addOrder(order: Order): void {
-  const orders = getOrders();
-  orders.push(order);
-  saveOrders(orders);
-}
-
-export function updateOrderStatus(
+export async function updateOrderStatus(
   id: string,
   status: Order['status'],
-): Order | null {
-  const orders = getOrders();
-  const idx = orders.findIndex((o) => o.id === id);
-  if (idx === -1) return null;
-  orders[idx].status = status;
-  saveOrders(orders);
-  return orders[idx];
+): Promise<Order | null> {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ status })
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) return null;
+  return rowToOrder(data);
 }
 
-export function deleteOrder(id: string): boolean {
-  const orders = getOrders();
-  const filtered = orders.filter((o) => o.id !== id);
-  if (filtered.length === orders.length) return false;
-  saveOrders(filtered);
-  return true;
+export async function deleteOrder(id: string): Promise<boolean> {
+  const { error, count } = await supabase
+    .from('orders')
+    .delete({ count: 'exact' })
+    .eq('id', id);
+  if (error) return false;
+  return (count ?? 0) > 0;
 }

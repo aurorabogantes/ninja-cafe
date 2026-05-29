@@ -21,7 +21,7 @@ export async function PATCH(
     return NextResponse.json({ error: 'Estado inválido.' }, { status: 400 });
   }
 
-  const updated = updateOrderStatus(id, status);
+  const updated = await updateOrderStatus(id, status);
   if (!updated) {
     return NextResponse.json({ error: 'Pedido no encontrado.' }, { status: 404 });
   }
@@ -39,7 +39,7 @@ export async function DELETE(
   }
 
   const { id } = await params;
-  const ok = deleteOrder(id);
+  const ok = await deleteOrder(id);
   if (!ok) {
     return NextResponse.json({ error: 'Pedido no encontrado.' }, { status: 404 });
   }

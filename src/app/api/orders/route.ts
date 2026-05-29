@@ -9,9 +9,7 @@ export async function GET(req: NextRequest) {
   if (!token || !(await verifyAdminToken(token))) {
     return NextResponse.json({ error: 'No autorizado.' }, { status: 401 });
   }
-  const orders = getOrders().sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-  );
+  const orders = await getOrders();
   return NextResponse.json(orders);
 }
 
@@ -54,6 +52,6 @@ export async function POST(req: NextRequest) {
     createdAt: new Date().toISOString(),
   };
 
-  addOrder(order);
+  await addOrder(order);
   return NextResponse.json(order, { status: 201 });
 }
