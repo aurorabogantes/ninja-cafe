@@ -18,8 +18,8 @@ export interface Order {
 }
 
 // ─── Menu ──────────────────────────────────────────────────────────────────
-export type BrewType = 'Classic' | 'Rich' | 'Over Ice' | 'Specialty';
-export type MenuCategory = 'hot' | 'cold';
+export type BrewType = 'Classic' | 'Rich' | 'Over Ice' | 'Specialty' | 'Frozen' | 'Espresso' | 'Cold Brew' | 'Cold-Pressed';
+export type MenuCategory = 'hot' | 'cold' | 'dessert';
 
 export interface MenuItem {
   id: string;
@@ -32,6 +32,7 @@ export interface MenuItem {
   brewSize: string;
   prepSteps: string[];
   tags: string[];
+  ingredients?: string[];
 }
 
 // ─── Cart ──────────────────────────────────────────────────────────────────

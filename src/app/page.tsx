@@ -6,7 +6,7 @@ import { menuItems } from '@/lib/menu';
 import MenuCard from '@/components/MenuCard';
 import OrderModal from '@/components/OrderModal';
 import {
-  ShoppingCart, ArrowLeft, Coffee, Flame, Snowflake, CheckCircle,
+  ShoppingCart, ArrowLeft, Coffee, Flame, Snowflake, CheckCircle, IceCreamBowl,
 } from 'lucide-react';
 
 type OrderStep = 'menu' | 'cart' | 'success';
@@ -17,7 +17,7 @@ export default function CustomerMenu() {
   const [customerName, setCustomerName] = useState('');
   const [notes, setNotes] = useState('');
   const [step, setStep] = useState<OrderStep>('menu');
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'hot' | 'cold'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'hot' | 'cold' | 'dessert'>('all');
   const [isPlacing, setIsPlacing] = useState(false);
   const [error, setError] = useState('');
 
@@ -50,6 +50,13 @@ export default function CustomerMenu() {
     categoryFilter === 'all'
       ? menuItems
       : menuItems.filter((m) => m.category === categoryFilter);
+
+  const filterConfig = [
+    { key: 'all' as const,     icon: <Coffee size={11} />,       label: 'Todo'     },
+    { key: 'hot' as const,     icon: <Flame size={11} />,        label: 'Caliente' },
+    { key: 'cold' as const,    icon: <Snowflake size={11} />,    label: 'Frío'     },
+    { key: 'dessert' as const, icon: <IceCreamBowl size={11} />, label: 'Helados'  },
+  ];
 
   async function placeOrder() {
     if (cart.length === 0) return;
@@ -291,18 +298,18 @@ export default function CustomerMenu() {
         }}
       >
         <div className="flex gap-1.5">
-          {(['all', 'hot', 'cold'] as const).map((f) => (
+          {filterConfig.map((f) => (
             <button
-              key={f}
-              onClick={() => setCategoryFilter(f)}
+              key={f.key}
+              onClick={() => setCategoryFilter(f.key)}
               className={`text-xs px-3 py-1.5 rounded-full font-semibold transition-colors border flex items-center gap-1 ${
-                categoryFilter === f
+                categoryFilter === f.key
                   ? 'bg-amber-fire text-wood-dark border-amber-fire'
                   : 'border-wood-warm/30 text-stone-medium hover:text-wood-pale hover:border-wood-warm/60'
               }`}
             >
-              {f === 'all' ? <Coffee size={11} /> : f === 'hot' ? <Flame size={11} /> : <Snowflake size={11} />}
-              {f === 'all' ? 'Todo' : f === 'hot' ? 'Caliente' : 'Frío'}
+              {f.icon}
+              {f.label}
             </button>
           ))}
         </div>
@@ -337,9 +344,17 @@ export default function CustomerMenu() {
                 ))}
             </div>
             <SectionTitle title="Bebidas Frías" icon={<Snowflake size={20} className="text-forest-light" />} />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
               {menuItems
                 .filter((m) => m.category === 'cold')
+                .map((item, i) => (
+                  <MenuCard key={item.id} item={item} onSelect={setSelectedItem} index={i} />
+                ))}
+            </div>
+            <SectionTitle title="Helados" icon={<IceCreamBowl size={20} className="text-amber-soft" />} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {menuItems
+                .filter((m) => m.category === 'dessert')
                 .map((item, i) => (
                   <MenuCard key={item.id} item={item} onSelect={setSelectedItem} index={i} />
                 ))}
@@ -348,10 +363,12 @@ export default function CustomerMenu() {
         ) : (
           <>
             <SectionTitle
-              title={categoryFilter === 'hot' ? 'Bebidas Calientes' : 'Bebidas Frías'}
+              title={categoryFilter === 'hot' ? 'Bebidas Calientes' : categoryFilter === 'cold' ? 'Bebidas Frías' : 'Helados'}
               icon={categoryFilter === 'hot'
                 ? <Flame size={20} className="text-amber-fire" />
-                : <Snowflake size={20} className="text-forest-light" />
+                : categoryFilter === 'cold'
+                ? <Snowflake size={20} className="text-forest-light" />
+                : <IceCreamBowl size={20} className="text-amber-soft" />
               }
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

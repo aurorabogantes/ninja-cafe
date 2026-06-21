@@ -1,7 +1,7 @@
 'use client';
 
 import { MenuItem } from '@/types';
-import { Flame, Snowflake, ChevronRight, Coffee, Droplets } from 'lucide-react';
+import { Flame, Snowflake, ChevronRight, Coffee, Droplets, IceCreamBowl } from 'lucide-react';
 
 interface Props {
   item: MenuItem;
@@ -19,12 +19,15 @@ const CARD_IMAGES: Record<string, string> = {
   'cold-brew-bosque':  'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop&q=75',
   'iced-latte-sierra': 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop&q=75',
   'frappe-lena':       'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop&q=75',
-  'cold-honey-haze':   'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop&q=75',
+  'cold-honey-haze':        'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=600&h=400&fit=crop&q=75',
+  'helado-ambar-arroyo':     'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=600&h=400&fit=crop&q=75',
+  'helado-niebla-maracuya':  'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=600&h=400&fit=crop&q=75',
 };
 
 export default function MenuCard({ item, onSelect, index = 0 }: Props) {
   const imageUrl = CARD_IMAGES[item.id];
   const isHot = item.category === 'hot';
+  const isDessert = item.category === 'dessert';
 
   return (
     <button

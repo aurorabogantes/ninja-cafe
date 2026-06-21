@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { MenuItem, CartItem } from '@/types';
 import {
-  X, Coffee, Droplets, FlaskConical, Maximize2, Flame, Snowflake, ChevronRight,
+  X, Coffee, Droplets, FlaskConical, Maximize2, Flame, Snowflake, ChevronRight, IceCreamBowl,
 } from 'lucide-react';
 
 interface Props {
@@ -16,6 +16,7 @@ interface Props {
 export default function OrderModal({ item, cart, onAddToCart, onClose }: Props) {
   const cartQty = cart.find((c) => c.item.id === item.id)?.quantity ?? 0;
   const isHot = item.category === 'hot';
+  const isDessert = item.category === 'dessert';
 
   // Close on Escape key
   useEffect(() => {
@@ -46,11 +47,17 @@ export default function OrderModal({ item, cart, onAddToCart, onClose }: Props) 
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                isHot ? 'bg-amber-fire/20 border border-amber-fire/30' : 'bg-forest-medium/30 border border-forest-light/30'
+                isHot
+                  ? 'bg-amber-fire/20 border border-amber-fire/30'
+                  : isDessert
+                  ? 'bg-amber-glow/20 border border-amber-glow/30'
+                  : 'bg-forest-medium/30 border border-forest-light/30'
               }`}
             >
               {isHot
                 ? <Coffee size={20} className="text-amber-glow" />
+                : isDessert
+                ? <IceCreamBowl size={20} className="text-amber-soft" />
                 : <Droplets size={20} className="text-forest-light" />
               }
             </div>
@@ -96,9 +103,9 @@ export default function OrderModal({ item, cart, onAddToCart, onClose }: Props) 
               <InfoPill icon={<FlaskConical size={14} />} label="Método" value={item.brewType} />
               <InfoPill icon={<Maximize2 size={14} />} label="Tamaño" value={item.brewSize} />
               <InfoPill
-                icon={isHot ? <Flame size={14} /> : <Snowflake size={14} />}
+                icon={isHot ? <Flame size={14} /> : isDessert ? <IceCreamBowl size={14} /> : <Snowflake size={14} />}
                 label="Temperatura"
-                value={isHot ? 'Caliente' : 'Frío'}
+                value={isHot ? 'Caliente' : isDessert ? 'Helado' : 'Frío'}
               />
             </div>
           </div>
