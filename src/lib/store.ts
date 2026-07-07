@@ -68,3 +68,4 @@ export async function deleteOrder(id: string): Promise<boolean> {
   if (error) return false;
   return (count ?? 0) > 0;
 }
+
