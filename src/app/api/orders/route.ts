@@ -52,6 +52,11 @@ export async function POST(req: NextRequest) {
     createdAt: new Date().toISOString(),
   };
 
-  await addOrder(order);
+  try {
+    await addOrder(order);
+  } catch (err) {
+    console.error('addOrder failed:', err);
+    return NextResponse.json({ error: 'No se pudo guardar el pedido.' }, { status: 500 });
+  }
   return NextResponse.json(order, { status: 201 });
 }
