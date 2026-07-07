@@ -1,10 +1,17 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { Order } from '@/types';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+let _supabase: SupabaseClient | null = null;
+
+function getSupabase(): SupabaseClient {
+  if (!_supabase) {
+    _supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    );
+  }
+  return _supabase;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function rowToOrder(row: any): Order {
@@ -19,7 +26,7 @@ function rowToOrder(row: any): Order {
 }
 
 export async function getOrders(): Promise<Order[]> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
@@ -28,7 +35,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 export async function addOrder(order: Order): Promise<void> {
-  const { error } = await supabase.from('orders').insert({
+  const { error } = await getSupabase().from('orders').insert({
     id: order.id,
     customer_name: order.customerName,
     items: order.items,
@@ -43,7 +50,7 @@ export async function updateOrderStatus(
   id: string,
   status: Order['status'],
 ): Promise<Order | null> {
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('orders')
     .update({ status })
     .eq('id', id)
@@ -54,7 +61,7 @@ export async function updateOrderStatus(
 }
 
 export async function deleteOrder(id: string): Promise<boolean> {
-  const { error, count } = await supabase
+  const { error, count } = await getSupabase()
     .from('orders')
     .delete({ count: 'exact' })
     .eq('id', id);
